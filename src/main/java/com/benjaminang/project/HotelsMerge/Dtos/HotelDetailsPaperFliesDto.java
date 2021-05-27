@@ -20,7 +20,7 @@ public class HotelDetailsPaperFliesDto {
     private LocationDto location;
     private String details;
     private AmenitiesDto amenities;
-    private ImageDto images;
+    private ImagePaperFliesDto images;
     @JsonProperty("booking_conditions")
     private List<String> bookingConditions;
 }

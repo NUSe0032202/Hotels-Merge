@@ -1,6 +1,5 @@
 package com.benjaminang.project.HotelsMerge.Dtos;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.*;
 
 import java.util.List;
@@ -10,7 +9,8 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 @Builder
-public class ImageDto {
+public class ResponseImagesDto {
     List<ImageElementDto> rooms;
+    List<ImageElementDto> site;
     List<ImageElementDto> amenities;
 }

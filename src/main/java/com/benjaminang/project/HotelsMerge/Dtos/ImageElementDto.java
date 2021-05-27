@@ -9,8 +9,8 @@ import lombok.*;
 @ToString
 @Builder
 public class ImageElementDto {
-    @JsonAlias({"link"})
-    private String url;
+    @JsonAlias({"url"})
+    private String link;
     @JsonAlias({"caption"})
     private String description;
 }

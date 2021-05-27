@@ -1,10 +1,8 @@
 package com.benjaminang.project.HotelsMerge.Controller;
 
 
-import com.benjaminang.project.HotelsMerge.Dtos.HotelDetailsAcmeDto;
 import com.benjaminang.project.HotelsMerge.Dtos.HotelDetailsPaperFliesDto;
-import com.benjaminang.project.HotelsMerge.Dtos.HotelDetailsPatagoniaDto;
-import com.benjaminang.project.HotelsMerge.Service.RetrieveAndMergeHotelDetailsService;
+import com.benjaminang.project.HotelsMerge.Service.RetrieveHotelDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +16,11 @@ import java.util.List;
 public class RetrieveHotelDetailsController {
 
     @Autowired
-    private RetrieveAndMergeHotelDetailsService retrieveAndMergeHotelDetailsService;
+    private RetrieveHotelDetailsService retrieveHotelDetailsService;
 
     @GetMapping(path = "/testRetrieval")
     public ResponseEntity<Object> testRetrieval() {
-        List<HotelDetailsPaperFliesDto> hotelDetailsAcmeDtoList = Arrays.asList(retrieveAndMergeHotelDetailsService.getHotelDetailsFromEndPoint_3());
+        List<HotelDetailsPaperFliesDto> hotelDetailsAcmeDtoList = Arrays.asList(retrieveHotelDetailsService.getHotelDetailsFromEndPoint_3());
         if (hotelDetailsAcmeDtoList != null) {
             return new ResponseEntity<>(hotelDetailsAcmeDtoList, HttpStatus.OK);
         } else {

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
-public class RetrieveAndMergeHotelDetailsService {
+public class RetrieveHotelDetailsService {
 
     private static final String BASE_URL = "https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers";
 
@@ -20,7 +20,7 @@ public class RetrieveAndMergeHotelDetailsService {
 
     private WebClient webClient;
 
-    public RetrieveAndMergeHotelDetailsService() {
+    public RetrieveHotelDetailsService() {
         this.webClient = WebClient.builder().baseUrl(BASE_URL).build();
     }
 
