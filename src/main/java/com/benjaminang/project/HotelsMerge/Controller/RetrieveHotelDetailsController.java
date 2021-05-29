@@ -40,7 +40,7 @@ public class RetrieveHotelDetailsController {
     public ResponseEntity<Object> getHotelDetailsByID(@RequestBody tempDto receiveDto) {
         System.out.println("Received id: " + receiveDto.getId());
 
-        ResponseDto responseDto = mergeHotelDetailsService.mergeHotelDetails(receiveDto.getId());
+        ResponseDto responseDto = mergeHotelDetailsService.retrieveHotelDetailsById(receiveDto.getId());
         if (responseDto != null) {
             return new ResponseEntity<>(responseDto,HttpStatus.OK);
         } else {
