@@ -22,9 +22,10 @@ public class MergeHotelDetailsService implements CommandLineRunner {
     private HashMap<String, HotelDetailsAcmeDto> hotelDetailsAcmeDtoHashMap = new HashMap<String, HotelDetailsAcmeDto>();
     private HashMap<String, HotelDetailsPaperFliesDto> hotelDetailsPaperFliesDtoHashMap = new HashMap<String, HotelDetailsPaperFliesDto>();
     private HashMap<String, HotelDetailsPatagoniaDto> hotelDetailsPatagoniaDtoHashMap = new HashMap<String, HotelDetailsPatagoniaDto>();
-    private HashMap<String, ResponseDto> mergedHotelDetailsMap = new HashMap<String, ResponseDto>();
+    private HashMap<String, ResponseDto> mergedHotelDetailsMap = new HashMap<>();
+    private HashMap<Integer, List<String>> destinationIdToHotelIdMap = new HashMap<>();
 
-    private void mergeHotelDetails() {
+    public void mergeHotelDetails() {
 
         log.info("Attempting to retrieve hotel data from specified endpoints");
         this.retrieveHotelDetails();
@@ -66,14 +67,14 @@ public class MergeHotelDetailsService implements CommandLineRunner {
                             destinationId = hotelDetailsPatagoniaDtoHashMap.get(hotelId).getDestination();
                         }
                         responseDto.setDestination_id(destinationId);
-                        log.info("Merge: Destination Id: "+ responseDto.toString());
+                        log.info("Merge: Destination Id: " + responseDto.toString());
                         break;
 
                     case "booking_conditions":
                         if (hotelDetailsPaperFliesDtoHashMap.containsKey(hotelId)) {
                             responseDto.setBooking_conditions(hotelDetailsPaperFliesDtoHashMap.get(hotelId).getBookingConditions());
                         }
-                        log.info("Merge: Booking Condition: "+ responseDto.toString());
+                        log.info("Merge: Booking Condition: " + responseDto.toString());
                         break;
 
                     case "location":
@@ -118,7 +119,7 @@ public class MergeHotelDetailsService implements CommandLineRunner {
                         }
                         locationDto.setCountry(country);
                         responseDto.setLocation(locationDto);
-                        log.info("Merge: Location: "+ responseDto.toString());
+                        log.info("Merge: Location: " + responseDto.toString());
                         break;
 
                     case "description":
@@ -219,6 +220,15 @@ public class MergeHotelDetailsService implements CommandLineRunner {
                 }
             }
             mergedHotelDetailsMap.put(hotelId, responseDto);
+            if (destinationIdToHotelIdMap.containsKey(responseDto.getDestination_id())) {
+                List<String> list = destinationIdToHotelIdMap.get(responseDto.getDestination_id());
+                list.add(hotelId);
+                destinationIdToHotelIdMap.put(responseDto.getDestination_id(), list);
+            } else {
+                List<String> newList = new ArrayList<>();
+                newList.add(hotelId);
+                destinationIdToHotelIdMap.put(responseDto.getDestination_id(), newList);
+            }
         }
     }
 
@@ -244,8 +254,22 @@ public class MergeHotelDetailsService implements CommandLineRunner {
         }
     }
 
-    public ResponseDto retrieveHotelDetailsById(String id) {
-        return mergedHotelDetailsMap.get(id);
+    public List<ResponseDto> retrieveHotelDetailsById(List<String> hotelIds) {
+        List<ResponseDto> filteredHotelDetails = new ArrayList<>();
+        for (String hotelId : hotelIds) {
+            filteredHotelDetails.add(mergedHotelDetailsMap.get(hotelId));
+        }
+        return filteredHotelDetails;
+    }
+
+    public List<ResponseDto> retrieveHotelDetailsByDestinationId(int destinationId) {
+        //Get the list of hotel ids that has been mapped to the destination id
+        List<String> hotelIds = destinationIdToHotelIdMap.get(destinationId);
+        List<ResponseDto> filteredHotelDetails = new ArrayList<>();
+        for (String hotelId : hotelIds) {
+            filteredHotelDetails.add(mergedHotelDetailsMap.get(hotelId));
+        }
+        return filteredHotelDetails;
     }
 
     @Override

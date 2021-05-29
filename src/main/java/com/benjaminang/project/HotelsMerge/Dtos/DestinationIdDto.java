@@ -7,6 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
-public class tempDto {
-    private String id;
+public class DestinationIdDto {
+    private Integer destinationId;
 }
