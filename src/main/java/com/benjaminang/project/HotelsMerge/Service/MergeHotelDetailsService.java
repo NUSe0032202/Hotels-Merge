@@ -1,6 +1,7 @@
 package com.benjaminang.project.HotelsMerge.Service;
 
 import com.benjaminang.project.HotelsMerge.Dtos.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
+@Slf4j
 @Service
 public class MergeHotelDetailsService implements CommandLineRunner {
     @Autowired
@@ -24,11 +26,11 @@ public class MergeHotelDetailsService implements CommandLineRunner {
 
     private void mergeHotelDetails() {
 
-        System.out.println("Attempting to retrieve hotel data from endpoints");
+        log.info("Attempting to retrieve hotel data from specified endpoints");
         this.retrieveHotelDetails();
 
         for (String hotelId : hotelIdKeys) {
-            System.out.println("Attempting merging for id: " + hotelId);
+            log.info("Attempting data merge for hotel id: " + hotelId);
             ResponseDto responseDto = new ResponseDto();
             for (String objKeys : objKeys) {
                 switch (objKeys) {
@@ -49,7 +51,7 @@ public class MergeHotelDetailsService implements CommandLineRunner {
                             hotelName = hotelDetailsPatagoniaDtoHashMap.get(hotelId).getName();
                         }
                         responseDto.setName(hotelName);
-                        System.out.println("Merging hotel name: " + responseDto.toString());
+                        log.info("Merge: Hotel Name: " + responseDto.toString());
                         break;
 
                     case "destination_id":
@@ -64,14 +66,14 @@ public class MergeHotelDetailsService implements CommandLineRunner {
                             destinationId = hotelDetailsPatagoniaDtoHashMap.get(hotelId).getDestination();
                         }
                         responseDto.setDestination_id(destinationId);
-                        System.out.println("Merging destination id: " + responseDto.toString());
+                        log.info("Merge: Destination Id: "+ responseDto.toString());
                         break;
 
                     case "booking_conditions":
                         if (hotelDetailsPaperFliesDtoHashMap.containsKey(hotelId)) {
                             responseDto.setBooking_conditions(hotelDetailsPaperFliesDtoHashMap.get(hotelId).getBookingConditions());
                         }
-                        System.out.println("Merging booking_condition: " + responseDto.toString());
+                        log.info("Merge: Booking Condition: "+ responseDto.toString());
                         break;
 
                     case "location":
@@ -116,7 +118,7 @@ public class MergeHotelDetailsService implements CommandLineRunner {
                         }
                         locationDto.setCountry(country);
                         responseDto.setLocation(locationDto);
-                        System.out.println("Merging location: " + responseDto.toString());
+                        log.info("Merge: Location: "+ responseDto.toString());
                         break;
 
                     case "description":
@@ -131,7 +133,7 @@ public class MergeHotelDetailsService implements CommandLineRunner {
                             description = hotelDetailsAcmeDtoHashMap.get(hotelId).getDescription();
                         }
                         responseDto.setDescription(description);
-                        System.out.println("Merging description: " + responseDto.toString());
+                        log.info("Merge: Description: " + responseDto.toString());
                         break;
 
                     case "amenities":
@@ -177,7 +179,7 @@ public class MergeHotelDetailsService implements CommandLineRunner {
                             }
                         }
                         responseDto.setAmenities(new AmenitiesDto(general, room));
-                        System.out.println("Merging amenities: " + responseDto.toString());
+                        log.info("Merge: Amenities: " + responseDto.toString());
                         break;
 
 
@@ -212,7 +214,7 @@ public class MergeHotelDetailsService implements CommandLineRunner {
                             }
                         }
                         responseDto.setImages(new ResponseImagesDto(rooms, site, amenities));
-                        System.out.println("Merging images: " + responseDto.toString());
+                        log.info("Merge: Images: " + responseDto.toString());
                         break;
                 }
             }
@@ -248,7 +250,7 @@ public class MergeHotelDetailsService implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("Attempting to merge hotel details");
+        log.info("Attempting to merge hotel details");
         this.mergeHotelDetails();
     }
 }
