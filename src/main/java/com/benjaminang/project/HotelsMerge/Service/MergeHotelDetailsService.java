@@ -1,6 +1,7 @@
 package com.benjaminang.project.HotelsMerge.Service;
 
 import com.benjaminang.project.HotelsMerge.Dtos.*;
+import com.benjaminang.project.HotelsMerge.Exceptions.ApplicationLayerException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -17,7 +17,7 @@ public class MergeHotelDetailsService implements CommandLineRunner {
   @Autowired private RetrieveHotelDetailsService retrieveHotelDetailsService;
   private Set<String> hotelIdKeys = new HashSet<>();
   private ArrayList<String> objKeys =
-      new ArrayList<String>(
+      new ArrayList<>(
           Arrays.asList(
               "id",
               "destination_id",
@@ -27,14 +27,16 @@ public class MergeHotelDetailsService implements CommandLineRunner {
               "amenities",
               "images",
               "booking_conditions"));
-  private HashMap<String, HotelDetailsAcmeDto> hotelDetailsAcmeDtoHashMap =
-      new HashMap<String, HotelDetailsAcmeDto>();
+  private HashMap<String, HotelDetailsAcmeDto> hotelDetailsAcmeDtoHashMap = new HashMap<>();
   private HashMap<String, HotelDetailsPaperFliesDto> hotelDetailsPaperFliesDtoHashMap =
-      new HashMap<String, HotelDetailsPaperFliesDto>();
+      new HashMap<>();
   private HashMap<String, HotelDetailsPatagoniaDto> hotelDetailsPatagoniaDtoHashMap =
-      new HashMap<String, HotelDetailsPatagoniaDto>();
+      new HashMap<>();
   private HashMap<String, ResponseDto> mergedHotelDetailsMap = new HashMap<>();
   private HashMap<Integer, List<String>> destinationIdToHotelIdMap = new HashMap<>();
+  private static final String NAME_DEFAULT_STRING = "NAME_NOT_FOUND";
+  private static final String ADDRESS_DEFAULT_STRING = "ADDRESS_NOT_FOUND";
+  private static final String DESCRIPTION_DEFAULT_STRING = "DESCRIPTION_NOT_FOUND";
 
   public void mergeHotelDetails() {
 
@@ -44,23 +46,23 @@ public class MergeHotelDetailsService implements CommandLineRunner {
     for (String hotelId : hotelIdKeys) {
       log.info("Attempting data merge for hotel id: " + hotelId);
       ResponseDto responseDto = new ResponseDto();
-      for (String objKeys : objKeys) {
-        switch (objKeys) {
+      for (String keys : objKeys) {
+        switch (keys) {
           case "id":
             responseDto.setId(hotelId);
             break;
 
           case "name":
-            String hotelName = "NAME_NOT_FOUND";
+            String hotelName = NAME_DEFAULT_STRING;
             if (hotelDetailsAcmeDtoHashMap.containsKey(hotelId)) {
               hotelName = hotelDetailsAcmeDtoHashMap.get(hotelId).getName();
             }
             if (hotelDetailsPaperFliesDtoHashMap.containsKey(hotelId)
-                && hotelName.equals("NAME_NOT_FOUND")) {
+                && hotelName.equals(NAME_DEFAULT_STRING)) {
               hotelName = hotelDetailsPaperFliesDtoHashMap.get(hotelId).getHotelName();
             }
             if (hotelDetailsPatagoniaDtoHashMap.containsKey(hotelId)
-                && hotelName.equals("NAME_NOT_FOUND")) {
+                && hotelName.equals(NAME_DEFAULT_STRING)) {
               hotelName = hotelDetailsPatagoniaDtoHashMap.get(hotelId).getName();
             }
             responseDto.setName(hotelName);
@@ -106,16 +108,16 @@ public class MergeHotelDetailsService implements CommandLineRunner {
             locationDto.setLng(longitude);
             locationDto.setLat(latitude);
 
-            String address = "ADDRESS_NOT_FOUND";
+            String address = ADDRESS_DEFAULT_STRING;
             if (hotelDetailsPaperFliesDtoHashMap.containsKey(hotelId)) {
               address = hotelDetailsPaperFliesDtoHashMap.get(hotelId).getLocation().getAddress();
             }
             if (hotelDetailsPatagoniaDtoHashMap.containsKey(hotelId)
-                && address.equals("ADDRESS_NOT_FOUND")) {
+                && address.equals(ADDRESS_DEFAULT_STRING)) {
               address = hotelDetailsPatagoniaDtoHashMap.get(hotelId).getAddress();
             }
             if (hotelDetailsAcmeDtoHashMap.containsKey(hotelId)
-                && address.equals("ADDRESS_NOT_FOUND")) {
+                && address.equals(ADDRESS_DEFAULT_STRING)) {
               address = hotelDetailsAcmeDtoHashMap.get(hotelId).getAddress();
             }
             locationDto.setAddress(address);
@@ -140,16 +142,16 @@ public class MergeHotelDetailsService implements CommandLineRunner {
             break;
 
           case "description":
-            String description = "DESCRIPTION_NOT_FOUND";
+            String description = DESCRIPTION_DEFAULT_STRING;
             if (hotelDetailsPaperFliesDtoHashMap.containsKey(hotelId)) {
               description = hotelDetailsPaperFliesDtoHashMap.get(hotelId).getDetails();
             }
             if (hotelDetailsPatagoniaDtoHashMap.containsKey(hotelId)
-                && (description.equals("DESCRIPTION_NOT_FOUND"))) {
+                && (description.equals(DESCRIPTION_DEFAULT_STRING))) {
               description = hotelDetailsPatagoniaDtoHashMap.get(hotelId).getInfo();
             }
             if (hotelDetailsAcmeDtoHashMap.containsKey(hotelId)
-                && (description.equals("DESCRIPTION_NOT_FOUND"))) {
+                && (description.equals(DESCRIPTION_DEFAULT_STRING))) {
               description = hotelDetailsAcmeDtoHashMap.get(hotelId).getDescription();
             }
             responseDto.setDescription(description);
@@ -163,12 +165,12 @@ public class MergeHotelDetailsService implements CommandLineRunner {
               AmenitiesDto amenitiesDto =
                   hotelDetailsPaperFliesDtoHashMap.get(hotelId).getAmenities();
               List<String> list = amenitiesDto.getGeneral();
-              if (list.size() >= 1) {
+              if (!list.isEmpty()) {
                 general =
                     list.stream().map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
               }
               list = amenitiesDto.getRoom();
-              if (list.size() >= 1) {
+              if (!list.isEmpty()) {
                 room = list.stream().map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
               }
             }
@@ -176,14 +178,14 @@ public class MergeHotelDetailsService implements CommandLineRunner {
             List<String> amenitiesPatagonia = null;
             if (hotelDetailsAcmeDtoHashMap.containsKey(hotelId)) {
               List<String> list = hotelDetailsAcmeDtoHashMap.get(hotelId).getFacilities();
-              if (list.size() >= 1) {
+              if (!list.isEmpty()) {
                 facilitiesAcme =
                     list.stream().map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
               }
             }
             if (hotelDetailsPatagoniaDtoHashMap.containsKey(hotelId)) {
               List<String> list = hotelDetailsPatagoniaDtoHashMap.get(hotelId).getAmenities();
-              if (list.size() >= 1) {
+              if (!list.isEmpty()) {
                 amenitiesPatagonia =
                     list.stream().map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
               }
@@ -192,13 +194,11 @@ public class MergeHotelDetailsService implements CommandLineRunner {
               for (String facilityAcme : facilitiesAcme) {
                 Boolean flag = false;
                 for (String generalFacility : general) {
-                  if (generalFacility
-                      .replaceAll(" ", "")
-                      .contains(facilityAcme.replaceAll(" ", ""))) {
+                  if (generalFacility.replace(" ", "").contains(facilityAcme.replace(" ", ""))) {
                     flag = true;
                   }
                 }
-                if (flag == false) {
+                if (!flag) {
                   general.add(facilityAcme);
                 }
               }
@@ -207,13 +207,11 @@ public class MergeHotelDetailsService implements CommandLineRunner {
               for (String amenityPatagonia : amenitiesPatagonia) {
                 Boolean flag = false;
                 for (String amenityRoom : room) {
-                  if (amenityRoom
-                      .replaceAll(" ", "")
-                      .contains(amenityPatagonia.replaceAll(" ", ""))) {
+                  if (amenityRoom.replace(" ", "").contains(amenityPatagonia.replace(" ", ""))) {
                     flag = true;
                   }
                 }
-                if (flag == false) {
+                if (!flag) {
                   room.add(amenityPatagonia);
                 }
               }
@@ -247,7 +245,7 @@ public class MergeHotelDetailsService implements CommandLineRunner {
                     flag = true;
                   }
                 }
-                if (flag == false) {
+                if (!flag) {
                   rooms.add(roomElementPatagonia);
                 }
               }
@@ -255,6 +253,10 @@ public class MergeHotelDetailsService implements CommandLineRunner {
             responseDto.setImages(new ResponseImagesDto(rooms, site, amenities));
             log.info("Merge: Images: " + responseDto.toString());
             break;
+
+          default:
+            throw new ApplicationLayerException("Encountered exception during merging of data");
+
         }
       }
       mergedHotelDetailsMap.put(hotelId, responseDto);

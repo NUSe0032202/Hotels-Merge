@@ -3,9 +3,11 @@ package com.benjaminang.project.HotelsMerge.Service;
 import com.benjaminang.project.HotelsMerge.Dtos.HotelDetailsAcmeDto;
 import com.benjaminang.project.HotelsMerge.Dtos.HotelDetailsPaperFliesDto;
 import com.benjaminang.project.HotelsMerge.Dtos.HotelDetailsPatagoniaDto;
+import com.benjaminang.project.HotelsMerge.Exceptions.APIEndpointException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Service
 public class RetrieveHotelDetailsService {
@@ -25,32 +27,56 @@ public class RetrieveHotelDetailsService {
   }
 
   public HotelDetailsPatagoniaDto[] getHotelDetailsFromEndPoint_2() {
-    return webClient
-        .get()
-        .uri(uriBuilder -> uriBuilder.path(ENDPOINT_2).build())
-        .accept(MediaType.APPLICATION_JSON)
-        .retrieve()
-        .bodyToMono(HotelDetailsPatagoniaDto[].class)
-        .block();
+    HotelDetailsPatagoniaDto[] data = new HotelDetailsPatagoniaDto[] {};
+    try {
+      data =
+          webClient
+              .get()
+              .uri(uriBuilder -> uriBuilder.path(ENDPOINT_2).build())
+              .accept(MediaType.APPLICATION_JSON)
+              .retrieve()
+              .bodyToMono(HotelDetailsPatagoniaDto[].class)
+              .block();
+    } catch (WebClientResponseException e) {
+      throw new APIEndpointException(
+          "Error encountered while attempting to retrieve data from endpoint");
+    }
+    return data;
   }
 
   public HotelDetailsAcmeDto[] getHotelDetailsFromEndPoint_1() {
-    return webClient
-        .get()
-        .uri(uriBuilder -> uriBuilder.path(ENDPOINT_1).build())
-        .accept(MediaType.APPLICATION_JSON)
-        .retrieve()
-        .bodyToMono(HotelDetailsAcmeDto[].class)
-        .block();
+    HotelDetailsAcmeDto[] data = new HotelDetailsAcmeDto[] {};
+    try {
+      data =
+          webClient
+              .get()
+              .uri(uriBuilder -> uriBuilder.path(ENDPOINT_1).build())
+              .accept(MediaType.APPLICATION_JSON)
+              .retrieve()
+              .bodyToMono(HotelDetailsAcmeDto[].class)
+              .block();
+    } catch (WebClientResponseException e) {
+      throw new APIEndpointException(
+              "Error encountered while attempting to retrieve data from endpoint");
+    }
+    return data;
   }
 
   public HotelDetailsPaperFliesDto[] getHotelDetailsFromEndPoint_3() {
-    return webClient
-        .get()
-        .uri(uriBuilder -> uriBuilder.path(ENDPOINT_3).build())
-        .accept(MediaType.APPLICATION_JSON)
-        .retrieve()
-        .bodyToMono(HotelDetailsPaperFliesDto[].class)
-        .block();
+    HotelDetailsPaperFliesDto[] data = new HotelDetailsPaperFliesDto[] {};
+    try {
+      data =
+          webClient
+              .get()
+              .uri(uriBuilder -> uriBuilder.path(ENDPOINT_3).build())
+              .accept(MediaType.APPLICATION_JSON)
+              .retrieve()
+              .bodyToMono(HotelDetailsPaperFliesDto[].class)
+              .block();
+    } catch (WebClientResponseException e) {
+      throw new APIEndpointException(
+              "Error encountered while attempting to retrieve data from endpoint");
+    }
+    return data;
   }
 }

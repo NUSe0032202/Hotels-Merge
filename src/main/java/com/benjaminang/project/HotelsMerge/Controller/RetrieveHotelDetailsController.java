@@ -24,12 +24,7 @@ public class RetrieveHotelDetailsController {
   public ResponseEntity<Object> getHotelDetailsByID(@RequestBody HotelIdsDto receivedDto) {
     List<ResponseDto> responseDtoList =
         mergeHotelDetailsService.retrieveHotelDetailsById(receivedDto.getIds());
-    if (responseDtoList != null) {
-      return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(
-          "Error retrieving hotel details by ids", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
   }
 
   @PostMapping(path = "/retrieveHotelDetailsByDestinationId")
@@ -38,11 +33,6 @@ public class RetrieveHotelDetailsController {
     List<ResponseDto> responseDtoList =
         mergeHotelDetailsService.retrieveHotelDetailsByDestinationId(
             receivedDto.getDestinationId());
-    if (responseDtoList != null) {
-      return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(
-          "Error retrieving hotel details by destination id", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
   }
 }
