@@ -162,31 +162,28 @@ public class MergeHotelDetailsService implements CommandLineRunner {
             if (hotelDetailsPaperFliesDtoHashMap.containsKey(hotelId)) {
               AmenitiesDto amenitiesDto =
                   hotelDetailsPaperFliesDtoHashMap.get(hotelId).getAmenities();
-              if (amenitiesDto != null) {
-                List<String> list = amenitiesDto.getGeneral();
-                if (list != null && list.size() >= 1) {
-                  general =
-                      list.stream().map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
-                }
-                list = amenitiesDto.getRoom();
-                if (list != null && list.size() >= 1) {
-                  room =
-                      list.stream().map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
-                }
+              List<String> list = amenitiesDto.getGeneral();
+              if (list.size() >= 1) {
+                general =
+                    list.stream().map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
+              }
+              list = amenitiesDto.getRoom();
+              if (list.size() >= 1) {
+                room = list.stream().map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
               }
             }
             List<String> facilitiesAcme = null;
             List<String> amenitiesPatagonia = null;
             if (hotelDetailsAcmeDtoHashMap.containsKey(hotelId)) {
               List<String> list = hotelDetailsAcmeDtoHashMap.get(hotelId).getFacilities();
-              if (list != null && list.size() >= 1) {
+              if (list.size() >= 1) {
                 facilitiesAcme =
                     list.stream().map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
               }
             }
             if (hotelDetailsPatagoniaDtoHashMap.containsKey(hotelId)) {
               List<String> list = hotelDetailsPatagoniaDtoHashMap.get(hotelId).getAmenities();
-              if (list != null && list.size() >= 1) {
+              if (list.size() >= 1) {
                 amenitiesPatagonia =
                     list.stream().map(s -> s.trim().toLowerCase()).collect(Collectors.toList());
               }
