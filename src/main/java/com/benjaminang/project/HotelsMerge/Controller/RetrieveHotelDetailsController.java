@@ -1,6 +1,5 @@
 package com.benjaminang.project.HotelsMerge.Controller;
 
-
 import com.benjaminang.project.HotelsMerge.Dtos.DestinationIdDto;
 import com.benjaminang.project.HotelsMerge.Dtos.ResponseDto;
 import com.benjaminang.project.HotelsMerge.Dtos.HotelIdsDto;
@@ -19,29 +18,31 @@ import java.util.List;
 @RestController
 public class RetrieveHotelDetailsController {
 
-    @Autowired
-    MergeHotelDetailsService mergeHotelDetailsService;
+  @Autowired MergeHotelDetailsService mergeHotelDetailsService;
 
-    @PostMapping(path = "/retrieveHotelDetailsByHotelIds")
-    public ResponseEntity<Object> getHotelDetailsByID(@RequestBody HotelIdsDto receivedDto) {
-        List<ResponseDto> responseDtoList = mergeHotelDetailsService.retrieveHotelDetailsById(receivedDto.getIds());
-        if (responseDtoList != null) {
-            return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Error retrieving hotel details by ids", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+  @PostMapping(path = "/retrieveHotelDetailsByHotelIds")
+  public ResponseEntity<Object> getHotelDetailsByID(@RequestBody HotelIdsDto receivedDto) {
+    List<ResponseDto> responseDtoList =
+        mergeHotelDetailsService.retrieveHotelDetailsById(receivedDto.getIds());
+    if (responseDtoList != null) {
+      return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(
+          "Error retrieving hotel details by ids", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
 
-    @PostMapping(path = "/retrieveHotelDetailsByDestinationId")
-    public ResponseEntity<Object> getHotelDetailsByDestinationID(@RequestBody DestinationIdDto receivedDto) {
-        List<ResponseDto> responseDtoList = mergeHotelDetailsService.retrieveHotelDetailsByDestinationId(receivedDto.getDestinationId());
-        if (responseDtoList != null) {
-            return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("EError retrieving hotel details by destination id", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+  @PostMapping(path = "/retrieveHotelDetailsByDestinationId")
+  public ResponseEntity<Object> getHotelDetailsByDestinationID(
+      @RequestBody DestinationIdDto receivedDto) {
+    List<ResponseDto> responseDtoList =
+        mergeHotelDetailsService.retrieveHotelDetailsByDestinationId(
+            receivedDto.getDestinationId());
+    if (responseDtoList != null) {
+      return new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(
+          "Error retrieving hotel details by destination id", HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-
+  }
 }
