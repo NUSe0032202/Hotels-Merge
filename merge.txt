@@ -1,0 +1,26 @@
+Problem Strategy
+
+1. Parse and store the array of JSON from each endpoint into a hashmap, using the hotel id as the key. For this problem,
+we would have 3 hashmaps for 3 endpoints.
+
+2. Maintain a hashmap that has the destination id as the key and a list of hotel ids as the value, this is to ensure that
+any given destination id can be mapped back to the corresponding hotel ids
+
+3. When merging fields which are straightforward such as lat, lng, address, booking conditions. The general idea is to check
+each of the 3 hashmaps in sequential order to find if there exists a value for the given hotel id. If there is a value,
+update the response object accordingly. This can be describe as a "first-hit" policy where subsequent checks are ignored in
+the event the required data is successfully found.
+
+Assumptions
+
+1. For the amenities field, I selected the amenities field from the paperflies endpoint
+(https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers/paperflies) as a base. I assumed that the facilities field of the
+acme endpoint (https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers/acme) refers to general hotel facilities and also
+that the amenities field of the patagonia endpoint (https://5f2be0b4ffc88500167b85a0.mockapi.io/suppliers/patagonia)
+refers to hotel room amenities. Based off these assumptions, I checked for duplicates with the amenities field from the
+paperflies endpoint which internally consists of two other fields(general, room). An example would be -> retrieve a string
+element from the facilities field of the acme endpoint -> retrieve a string element from the general field of the amenities field of
+the paperflies endpoint -> check and drop duplicates.
+
+2. Assumption 1 requires further clarification and fine-tuning for the approach to be more robust.
+
