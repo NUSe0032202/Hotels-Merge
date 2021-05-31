@@ -17,7 +17,9 @@
 
 For 1,2 and 3, the application merges the data during startup thus, allow some time for the application to start before
 attempting to query the endpoints. The application should display similar logs to the picture attached below which would
-indicate that it has started successfully.
+indicate that it has started successfully.  
+
+![program_run](src/main/resources/image/hotels_merge_run.png)
     
 ## How to query for data  
 
